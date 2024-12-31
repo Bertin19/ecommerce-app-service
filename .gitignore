@@ -1,1 +1,11 @@
 /.idea/
+/services/discovery/.idea/.gitignore
+/services/customer-service/.idea/aws.xml
+/services/discovery/.idea/aws.xml
+/services/customer-service/.idea/compiler.xml
+/services/customer-service/.idea/encodings.xml
+/services/customer-service/.idea/jarRepositories.xml
+/services/customer-service/.idea/misc.xml
+/services/discovery/.idea/misc.xml
+/services/customer-service/.idea/vcs.xml
+/services/discovery/.idea/vcs.xml
