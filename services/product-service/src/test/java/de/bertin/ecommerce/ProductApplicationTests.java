@@ -1,10 +1,10 @@
-package de.bertin.configserver;
+package de.bertin.ecommerce;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ConfigServerApplicationTests {
+class ProductApplicationTests {
 
 	@Test
 	void contextLoads() {
