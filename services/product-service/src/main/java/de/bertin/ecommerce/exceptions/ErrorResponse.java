@@ -1,4 +1,4 @@
-package de.bertin.ecommerce.handler;
+package de.bertin.ecommerce.exceptions;
 
 import java.util.Map;
 
