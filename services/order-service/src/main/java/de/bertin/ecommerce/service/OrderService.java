@@ -1,14 +1,19 @@
 package de.bertin.ecommerce.service;
 
+import de.bertin.ecommerce.client.CustomerResponse;
+import de.bertin.ecommerce.client.PurchaseResponse;
 import de.bertin.ecommerce.controller.OrderRequest;
 import de.bertin.ecommerce.client.CustomerClient;
 import de.bertin.ecommerce.controller.OrderResponse;
 import de.bertin.ecommerce.exception.BusinessException;
 import de.bertin.ecommerce.kafka.OrderConfirmation;
 import de.bertin.ecommerce.kafka.OrderProducer;
+import de.bertin.ecommerce.model.Order;
 import de.bertin.ecommerce.orderline.OrderLineRequest;
 import de.bertin.ecommerce.client.ProductClient;
 import de.bertin.ecommerce.client.PurchaseRequest;
+import de.bertin.ecommerce.payment.PaymentClient;
+import de.bertin.ecommerce.payment.PaymentRequest;
 import de.bertin.ecommerce.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -26,32 +31,30 @@ public class OrderService {
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
     private final OrderMapper mapper;
+    private final PaymentClient paymentClient;
 
-    public OrderService(CustomerClient customerClient,
-                        ProductClient productClient,
-                        OrderRepository orderRepository,
-                        OrderLineService orderLineService,
-                        OrderProducer orderProducer,
-                        OrderMapper mapper
+    public OrderService(
+            OrderRepository orderRepository,
+            CustomerClient customerClient,
+            ProductClient productClient,
+            OrderLineService orderLineService,
+            OrderProducer orderProducer,
+            OrderMapper mapper,
+            PaymentClient paymentClient
     ) {
+        this.orderRepository = orderRepository;
         this.customerClient = customerClient;
         this.productClient = productClient;
-        this.orderRepository = orderRepository;
         this.orderLineService = orderLineService;
         this.orderProducer = orderProducer;
         this.mapper = mapper;
+        this.paymentClient = paymentClient;
     }
 
     public String createOrder(OrderRequest request) {
-        // check the customer
-        var customer = this.customerClient.findCustomerById(request.customerId())
-                .orElseThrow(() -> new BusinessException("Cannot create order::No existing customer with the provided id"));
-
-        // Purchase the products --> using product-service by calling the rest template
+        var customerResponse = validateCustomer(request);
         var purchaseProducts = this.productClient.purchaseProducts(request.products());
-        // persist order
         var order = this.orderRepository.save(mapper.toOrder(request));
-        // persist order lines
         for (PurchaseRequest purchaseRequest : request.products()) {
             orderLineService.saveOrderLine(
                     new OrderLineRequest(
@@ -62,18 +65,8 @@ public class OrderService {
                     )
             );
         }
-        // TODO: Start the payment process
-
-        // send the order confirmation --> notification-service (kafka maybe)
-        orderProducer.sendOrderConfirmation(
-                new OrderConfirmation(
-                        request.reference(),
-                        request.amount(),
-                        request.paymentMethod(),
-                        customer,
-                        purchaseProducts
-                )
-        );
+        processPayment(request, order.getId(), customerResponse);
+        sendOrderConfirmation(request, customerResponse, purchaseProducts);
 
         return order.getId();
     }
@@ -89,5 +82,33 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .map(mapper::fromOrder)
                 .orElseThrow(() -> new EntityNotFoundException("User with given Id does not exist"));
+    }
+
+    private void sendOrderConfirmation(OrderRequest request, CustomerResponse customerResponse, List<PurchaseResponse> purchaseProducts) {
+        orderProducer.sendOrderConfirmation(
+                new OrderConfirmation(
+                        request.reference(),
+                        request.amount(),
+                        request.paymentMethod(),
+                        customerResponse,
+                        purchaseProducts
+                )
+        );
+    }
+
+    private void processPayment(OrderRequest request, String orderId, CustomerResponse customerResponse) {
+        var paymentrequest = new PaymentRequest(
+                request.amount(),
+                request.paymentMethod(),
+                orderId,
+                request.reference(),
+                customerResponse
+        );
+        paymentClient.requestOrderPayment(paymentrequest);
+    }
+
+    private CustomerResponse validateCustomer(OrderRequest request) {
+        return this.customerClient.findCustomerById(request.customerId())
+                .orElseThrow(() -> new BusinessException("Cannot create order::No existing customer with the provided id"));
     }
 }
