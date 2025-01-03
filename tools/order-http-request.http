@@ -4,17 +4,17 @@ Content-Type: application/json
 
 {
   "id": null,
-  "reference": "ORD-2025-001",
-  "amount": 199.99,
-  "paymentMethod": "CREDIT_CARD",
+  "reference": "ORD-2025-002",
+  "amount": 109.24,
+  "paymentMethod": "PAYPAL",
   "customerId": "6777ef0c2ffe51723602f08b",
   "products": [
     {
-      "productId": "b19901bb-3f60-4ac1-aef4-ecc5b90c7f9a",
+      "productId": "978cd623-7d6f-4233-a9e5-8132b657f127",
       "quantity": 2
     },
     {
-      "productId": "31b338e6-d3aa-49bd-bfa9-d0bc6d4a6c4a",
+      "productId": "a6d29e59-2f3e-4239-bbad-bc43065ceab2",
       "quantity": 1
     }
   ]
