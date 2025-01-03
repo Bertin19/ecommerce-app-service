@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .header h1 {
+            color: #28a745;
+        }
+        .content {
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            text-align: center;
+            color: #888;
+        }
+        .footer a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <h1>Payment Confirmation</h1>
+    </div>
+    <div class="content">
+        <p>Dear <span th:text="${customerName}">Customer</span>,</p>
+        <p>We have successfully received your payment for the following order:</p>
+        <p><strong>Order Reference:</strong> <span th:text="${orderReference}">#12345</span></p>
+        <p><strong>Amount Paid:</strong> $<span th:text="${amount}">100.00</span></p>
+
+        <p>Thank you for choosing BertinCoding. If you have any questions, please feel free to <a href="mailto:support@bertincoding.com">contact us</a>.</p>
+    </div>
+    <div class="footer">
+        <p>Do not reply to this email as it is automatically generated.</p>
+        <p>© <span th:text="${#dates.format(today, 'yyyy')}">2025</span> BertinCoding. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>

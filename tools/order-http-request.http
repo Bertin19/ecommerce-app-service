@@ -1,0 +1,24 @@
+### Create a new order
+POST http://localhost:8222/api/v1/orders
+Content-Type: application/json
+
+{
+  "id": null,
+  "reference": "ORD-2025-001",
+  "amount": 199.99,
+  "paymentMethod": "CREDIT_CARD",
+  "customerId": "6777ef0c2ffe51723602f08b",
+  "products": [
+    {
+      "productId": "b19901bb-3f60-4ac1-aef4-ecc5b90c7f9a",
+      "quantity": 2
+    },
+    {
+      "productId": "31b338e6-d3aa-49bd-bfa9-d0bc6d4a6c4a",
+      "quantity": 1
+    }
+  ]
+}
+
+### fetch orders
+GET localhost:8222/api/v1/orders

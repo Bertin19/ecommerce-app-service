@@ -1,0 +1,17 @@
+### create a new customer
+POST localhost:8222/api/v1/customers
+Content-Type: application/json
+
+{
+  "firstname": "John",
+  "lastname": "Doe",
+  "email": "john.doe@example.com",
+  "address": {
+    "street": "123 Main St",
+    "state": "ST",
+    "zipCode": "12345"
+  }
+}
+
+### GET csutomers
+GET localhost:8222/api/v1/customers

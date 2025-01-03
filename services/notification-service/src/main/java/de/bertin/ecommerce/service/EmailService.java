@@ -78,7 +78,7 @@ public class EmailService {
     private void sendEmail(String destinationEmail, String templateName, String subject, Map<String, Object> variables) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, MULTIPART_MODE_RELATED, UTF_8.name());
-        messageHelper.setFrom("contact@bertin@com");
+        messageHelper.setFrom("contact@bertin.com");
 
         Context context = new Context();
         context.setVariables(variables);

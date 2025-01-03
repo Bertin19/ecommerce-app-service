@@ -13,3 +13,4 @@
 /services/product-service/target/
 /services/order-service/.idea/
 /services/notification-service/.idea/
+/services/gateway/.idea/
