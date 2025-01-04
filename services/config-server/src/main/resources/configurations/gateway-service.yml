@@ -1,4 +1,10 @@
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:9098/realms/ecommerce-realm"
+          jwk-set-uri: "http://localhost:9098/realms/ecommerce-realm/protocol/openid-connect/certs"
   cloud:
     gateway:
       discovery:
